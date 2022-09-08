@@ -62,7 +62,6 @@ source.new = function()
 end
 
 function source:is_available()
-    print('ft =', get_file_type())
     return vim.tbl_contains(
         { 'html', 'xml', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less' },
         get_file_type()
