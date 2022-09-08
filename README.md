@@ -31,8 +31,10 @@ require 'cmp'.setup {
 
 * [jackieaskins/cmp-emmet][cmp-emmet]
 * [aca/emmet-ls][emmet-ls]
+* [thendo-rambane/emmet-compe][emmet-compe] (deprecated)
 
 [emmet]: https://github.com/mattn/emmet-vim
 [cmp]: https://github.com/hrsh7th/nvim-cmp
 [cmp-emmet]: https://github.com/jackieaskins/cmp-emmet
 [emmet-ls]: https://github.com/aca/emmet-ls
+[emmet-compe]: https://github.com/thendo-rambane/emmet-compe
