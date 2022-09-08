@@ -6,7 +6,7 @@ local source = {}
 local function get_file_type()
     local ok, parser = pcall(vim.treesitter.get_parser)
     if not ok then
-        return fn['emmet#getFileType']()
+        return vim.bo.filetype
     end
     local cursor = vim.api.nvim_win_get_cursor(0)
     local range_parser = parser:language_for_range({ cursor[1] - 1, cursor[2], cursor[1] - 1, cursor[2] })
@@ -28,7 +28,7 @@ end
 
 local function emmet_complete()
     local last_word = get_last_word()
-    local type = get_file_type()
+    local type = get_file_type() or fn['emmet#getFileType']()
     local ok1, tree = pcall(fn['emmet#parseIntoTree'], last_word, type)
     if not ok1 then
         return
@@ -62,6 +62,7 @@ source.new = function()
 end
 
 function source:is_available()
+    print('ft =', get_file_type())
     return vim.tbl_contains(
         { 'html', 'xml', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less' },
         get_file_type()
@@ -98,13 +99,19 @@ function source:complete(request, callback)
         ['end'] = { line = cursor.line, character = cursor.col + #word - 1 },
     }
 
+    local snippet = build_snippet(text)
+
+    if not snippet or snippet == '' then
+        return
+    end
+
     local cmp_item = {
         word = word,
         label = word,
         kind = cmp.lsp.CompletionItemKind.Snippet,
         insertTextFormat = cmp.lsp.InsertTextFormat.Snippet,
         textEdit = {
-            newText = build_snippet(text),
+            newText = snippet,
             insert = range,
             replace = range,
         },
