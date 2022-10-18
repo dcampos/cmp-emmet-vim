@@ -3,6 +3,8 @@ local fn = vim.fn
 
 local source = {}
 
+---Returns the filetype at the cursor, using tree-sitter if available
+---@return unknown
 local function get_file_type()
     local ok, parser = pcall(vim.treesitter.get_parser)
     if not ok then
@@ -21,24 +23,41 @@ local function get_file_type()
     return lang
 end
 
+---Gets the emmet "abbr"
+---@return string?
 local function get_last_word()
     local current_word = fn.matchstr(fn.getline('.'), '\\S\\+\\%.c')
-    return current_word
+    local type = get_file_type() or fn['emmet#getFileType']()
+    local ok1, rtype = pcall(fn['emmet#lang#type'], type)
+    if not ok1 then
+        return
+    end
+    local part = fn['emmet#lang#' .. rtype .. '#findTokens'](current_word)
+    return part
 end
 
+---Gets the emmet string to be expanded
+---@return string?
 local function emmet_complete()
     local last_word = get_last_word()
     local type = get_file_type() or fn['emmet#getFileType']()
-    local ok1, tree = pcall(fn['emmet#parseIntoTree'], last_word, type)
+    local ok1, rtype = pcall(fn['emmet#lang#type'], type)
     if not ok1 then
+        return
+    end
+    local ok2, tree = pcall(fn['emmet#parseIntoTree'], last_word, rtype)
+    if not ok2 then
         return
     end
     local tree_view = tree.child[1]
     local indentation = fn['emmet#getIndentation'](type)
-    local ok2, string_view = pcall(fn['emmet#toString'], tree_view, type, 0, { type }, 0, indentation)
-    return ok2 and string_view or nil
+    local ok3, string_view = pcall(fn['emmet#toString'], tree_view, type, 0, { type }, 0, indentation)
+    return ok3 and string_view or nil
 end
 
+---Builds the snippet
+---@param text string
+---@return string
 local function build_snippet(text)
     local n = 0
     local snippet = text:gsub('%$%{([^}]+)%}', function(placeholder)
@@ -95,7 +114,7 @@ function source:complete(request, callback)
 
     local range = {
         ['start'] = { line = cursor.line, character = cursor.col - #word - 1 },
-        ['end'] = { line = cursor.line, character = cursor.col + #word - 1 },
+        ['end'] = { line = cursor.line, character = cursor.col - 1 },
     }
 
     local snippet = build_snippet(text)

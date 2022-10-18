@@ -27,6 +27,12 @@ require 'cmp'.setup {
 }
 ```
 
+Note: if you don't have `mattn/emmet-vim`, install it first:
+
+```viml
+Plug 'mattn/emmet-vim'
+```
+
 ## Related projects
 
 * [jackieaskins/cmp-emmet][cmp-emmet]
