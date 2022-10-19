@@ -61,16 +61,16 @@ end
 local function build_snippet(text)
     local n = 0
     local snippet = text:gsub('%$%{([^}]+)%}', function(placeholder)
-        n = n + 1
         if placeholder == 'cursor' then
             -- $0 is always the last tab stop
             return '$0'
         elseif vim.startswith(placeholder, 'lorem') then
             local lorem = fn['emmet#lorem#en#expand'](placeholder)
-            return string.format('${%d:%s}', n, lorem)
+            return string.format('%s', lorem)
         else
             -- Sometimes emmet uses numbered placeholders, which we want to remove
             placeholder = placeholder:gsub('%d+:', '')
+            n = n + 1
             return string.format('${%d:%s}', n, placeholder)
         end
     end)
