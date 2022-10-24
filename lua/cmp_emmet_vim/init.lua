@@ -59,7 +59,6 @@ end
 ---@param text string
 ---@return string
 local function build_snippet(text)
-    print(text)
     local n = 0
     local snippet = text:gsub('%$%{([^}]+)%}', function(placeholder)
         if placeholder == 'cursor' then
