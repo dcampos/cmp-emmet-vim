@@ -59,11 +59,13 @@ end
 ---@param text string
 ---@return string
 local function build_snippet(text)
+    print(text)
     local n = 0
     local snippet = text:gsub('%$%{([^}]+)%}', function(placeholder)
         if placeholder == 'cursor' then
-            -- $0 is always the last tab stop
-            return '$0'
+            -- We can't use $0 here, because there can be multiple $cursor placeholders
+            n = n + 1
+            return '$' .. n
         elseif vim.startswith(placeholder, 'lorem') then
             local lorem = fn['emmet#lorem#en#expand'](placeholder)
             return string.format('%s', lorem)
