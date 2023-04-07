@@ -86,7 +86,7 @@ end
 
 function source:is_available()
     return vim.tbl_contains(
-        { 'html', 'xml', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less' },
+        { 'html', 'xml', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'heex'},
         get_file_type()
     )
 end
