@@ -1,7 +1,24 @@
 local cmp = require('cmp')
 local fn = vim.fn
 
+---@class cmp_emmet_vim.Options
+---@field public filetypes string[]
+---@field public keyword_pattern string
+
+---@type cmp_emmet_vim.Options
+local defaults = {
+    filetypes = { 'html', 'xml', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'heex' },
+}
+
 local source = {}
+
+source._validate_options = function(_, params)
+    local opts = vim.tbl_deep_extend('keep', params.option, defaults)
+    vim.validate({
+        filetypes = { opts.filetypes, 'table' },
+    })
+    return opts
+end
 
 ---Returns the filetype at the cursor, using tree-sitter if available
 ---@return unknown
@@ -26,7 +43,7 @@ end
 ---Gets the emmet "abbr"
 ---@return string?
 local function get_last_word()
-    local current_word = fn.matchstr(fn.getline('.'), '\\S\\+\\%.c')
+    local current_word = fn.matchstr(vim.api.nvim_get_current_line(), '\\S\\+\\%.c')
     local type = get_file_type() or fn['emmet#getFileType']()
     local ok1, rtype = pcall(fn['emmet#lang#type'], type)
     if not ok1 then
@@ -85,10 +102,7 @@ source.new = function()
 end
 
 function source:is_available()
-    return vim.tbl_contains(
-        { 'html', 'xml', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'heex'},
-        get_file_type()
-    )
+    return vim.g.loaded_emmet_vim == 1
 end
 
 source.get_keyword_pattern = function()
@@ -100,9 +114,15 @@ function source:get_debug_name()
 end
 
 function source:complete(request, callback)
-    local word = get_last_word()
+    local opts = self:_validate_options(request)
 
-    if not word or word == '' then
+    if not vim.tbl_contains(opts.filetypes, get_file_type()) then
+        return
+    end
+
+    local ok, word = pcall(get_last_word)
+
+    if not ok or not word or word == '' then
         return
     end
 

@@ -33,6 +33,29 @@ Note: if you don't have `mattn/emmet-vim`, install it first:
 Plug 'mattn/emmet-vim'
 ```
 
+## Configuration
+
+Currently there is a single option available.
+
+```lua
+require 'cmp'.setup {
+  sources = {
+    {
+        name = 'emmet_vim',
+        option = {
+            filetypes = { ... },
+        }
+    }
+  }
+}
+```
+
+### filetypes (type: string[])
+
+***Default***: `{ 'html', 'xml', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'heex' }`
+
+ Filetypes, including embedded filetypes, for which to enable this source.
+
 ## Related projects
 
 * [jackieaskins/cmp-emmet][cmp-emmet]
