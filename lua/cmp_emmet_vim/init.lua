@@ -7,7 +7,19 @@ local fn = vim.fn
 
 ---@type cmp_emmet_vim.Options
 local defaults = {
-    filetypes = { 'html', 'xml', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'heex' },
+    filetypes = {
+        'html',
+        'xml',
+        'typescriptreact',
+        'javascriptreact',
+        'css',
+        'sass',
+        'scss',
+        'less',
+        'heex',
+        'tsx',
+        'jsx',
+    },
 }
 
 local source = {}
