@@ -52,7 +52,7 @@ require 'cmp'.setup {
 
 ### filetypes (type: string[])
 
-***Default***: `{ 'html', 'xml', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'heex' }`
+***Default***: `{ 'html', 'xml', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'heex', 'tsx', 'jsx' }`
 
  Filetypes, including embedded filetypes, for which to enable this source.
 
